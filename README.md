@@ -1,6 +1,8 @@
 # vue-study-pjt
 
-## Project setup
+## node_modules 파일 X
+
+## 프로젝트 설정
 ```
 npm install
 ```

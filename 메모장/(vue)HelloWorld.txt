@@ -1,0 +1,74 @@
+<template>
+  <div>
+    <span>
+      <p>{{test}}</p>
+    </span>
+    <p class="pClass" :class="testBoolean? 'aClass': ''">test</p>
+  
+    <button @click="fn_test">
+      클릭!!!
+    </button>
+    <p>{{button}}</p>
+    
+    <div v-for="item2222 in testData" :key="item2222.key">
+      <div v-if="item2222.key !==2">
+        key: {{item2222.key}} / value: {{item2222.value}}
+      </div>
+    </div>
+    <div v-show="!testBoolean">
+      <span>test1111111</span>
+    </div>
+    <div v-show="testBoolean">
+      <span>test2222222</span>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'HelloWorld',
+  props: {
+    msg: String
+  },
+  data() {
+    return {
+      test: 'helloWorldHi',
+      button : '버튼클릭',
+      // dataId: 'testDivId1',
+      testBoolean: false,
+      testData: [
+        {key:1, value:'a'},
+        {key:2, value:'b'},
+        {key:3, value:'c'},
+        {key:4, value:'d'},
+      ]
+    }
+  },
+  methods: {
+    fn_test() {
+      this.testBoolean = !this.testBoolean
+    }
+  }
+}
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+.aClass { 
+  color: red;
+}
+h3 {
+  margin: 40px 0 0;
+}
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+li {
+  display: inline-block;
+  margin: 0 10px;
+}
+a {
+  color: #42b983;
+}
+</style>

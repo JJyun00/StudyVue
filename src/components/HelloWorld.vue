@@ -1,11 +1,22 @@
 <template>
   <div>
-    <input @input="startnum = $event.target.value" placeholder="StartNum"><br>
-    <input @input="endnum = $event.target.value" placeholder="EndNum"><br>
-    <button type="button" @click="search">보기</button>
+    <!-- <input @input="startnum = $event.target.value" placeholder="StartNum"><br>
+    <input @input="endnum = $event.target.value" placeholder="EndNum"><br> -->
+
+    <!-- 달력날짜선택 -->
+    <div>
+    <div>
+        Start Date   <input type="date" @input="startnum = $event.target.value"/><br/>
+        End Date   <input type="date" @input="endnum = $event.target.value"/>
+    </div>
+    </div>
+    <!------------------>
+
+    <br/><button type="button" @click="searchall">보기</button>
     <div v-if='view === true'>
       <h2>전체 결과 수 : {{ totalCount }}</h2>
       <p>--------------------------------------------------------------------</p>
+
       <div v-for="item in array" :key="item.SEQ">
         <!-- <p>test{{array}}</p> -->
         <p>기준일 : {{ item.stateDt }}</p>
@@ -16,8 +27,7 @@
     </div>
   </div>
 </template>
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
 <script>
 import axios from 'axios'
 
@@ -34,8 +44,9 @@ data() {
     // death_cnt:''
   }
 },
+
 methods: {
-  search() {
+  searchall() {
     let url = 'http://openapi.data.go.kr/openapi/service/rest/Covid19/getCovid19InfStateJson?'
     let key = 'serviceKey=D%2FO%2Bxhp4RTql%2Fgcl1JK12cV%2BaW0CyCHsEAmjP%2F%2BrzTOVlp9OW1v55KtZYWihwA%2BkvoNw5Yl4Az46V8cu7t99fg%3D%3D'
     let param = '&pageNo=1&numOfRows=10'
@@ -62,6 +73,7 @@ methods: {
       console.log(error)
     })
   },
+
   fn_isEmpty() {
     console.log('isEmpty!!')
   }

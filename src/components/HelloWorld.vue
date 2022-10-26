@@ -1,14 +1,9 @@
 <template>
   <div>
-    <!-- <input @input="startnum = $event.target.value" placeholder="StartNum"><br>
-    <input @input="endnum = $event.target.value" placeholder="EndNum"><br> -->
-
     <!-- 달력날짜선택 -->
     <div>
-    <div>
-        Start Date   <input type="date" @input="startnum = $event.target.value"/><br/>
-        End Date   <input type="date" @input="endnum = $event.target.value"/>
-    </div>
+      Start Date   <input type="date" max="2022-10-26" @input="startnum = $event.target.value"/><br/>
+      End Date   <input type="date" min="" max="2022-10-26" @input="endnum = $event.target.value"/>
     </div>
     <!------------------>
 
@@ -16,15 +11,20 @@
     <div v-if='view === true'>
       <h2>전체 결과 수 : {{ totalCount }}</h2>
       <p>--------------------------------------------------------------------</p>
+        <!-- 날짜검색 -->
+        <input type="date" @input="searchdate = $event.target.value"/>
+        <button type="button" @click="search">검색</button>
+        <!-- -------- -->
 
       <div v-for="item in array" :key="item.SEQ">
-        <!-- <p>test{{array}}</p> -->
-        <p>기준일 : {{ item.stateDt }}</p>
+        <p :class="test? 'aclass':'class'">기준일 : {{ item.stateDt }}</p>
         <p>확진자 수 : {{ item.decideCnt }}</p>
         <p>사망자 수 : {{ item.deathCnt }}</p>
         <p>=======================================</p>
       </div>
     </div>
+
+    
   </div>
 </template>
 
@@ -39,9 +39,7 @@ data() {
     view: true,
     totalCount: '',
     array:'',
-    // state_dt:'',
-    // decide_cnt:'',
-    // death_cnt:''
+    test:true,
   }
 },
 
@@ -63,15 +61,29 @@ methods: {
       }
       lv_Vm.totalCount = result.data.response.body.totalCount
       lv_Vm.array= result.data.response.body.items.item
-      // lv_Vm.state_dt = result.data.response.body.items.item.stateDt
-      // lv_Vm.decide_cnt = result.data.response.body.items.item.decideCnt
-      // lv_Vm.death_cnt = result.data.response.body.items.item.deathCnt
       lv_Vm.view = true
       console.log(result)
     })
+
     .catch((error) => {
       console.log(error)
     })
+  },
+
+  search() {
+    const a = this
+    for(let i=0; i<a.array.length; i++){
+      if(a.searchdate.split('-').join('') === a.array[i].stateDt.toString()){
+        a.test=false
+        console.log(a.searchdate.split('-').join(''))
+        console.log(a.array[i].stateDt.toString())
+      }
+      else {
+        a.test=true 
+        console.log('failfail')
+      }
+    }
+    
   },
 
   fn_isEmpty() {
@@ -80,3 +92,12 @@ methods: {
 }
 }
 </script>
+
+<style scoped>
+.aclass {
+  color:red;
+}
+.class{
+  color:blue;
+}
+</style>

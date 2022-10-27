@@ -2,33 +2,36 @@
   <div>
     <!-- 달력날짜선택 -->
     <div>
-      <input type="date" max="2022-10-26" @input="startnum = $event.target.value"/>
-      ~<input type="date" min="" max="2022-10-26" @input="endnum = $event.target.value"/>
-      <button type="button" @click="searchall">보기</button>
+      Start Date   <input type="date" min="2020-01-20" max="2022-10-27" @input="startnum = $event.target.value"/><br/>
+      End Date   <input type="date" max="2022-10-27" @input="endnum = $event.target.value"/>
     </div>
+    <!------------------>
 
+    <br/><button type="button" @click="searchall">보기</button>
     <div v-if='view === true'>
       <h2>전체 결과 수 : {{ totalCount }}</h2>
-      <hr>
+      <p>--------------------------------------------------------------------</p>
       <!-- 날짜검색 -->
       <div>
         <input type="date" :min="startnum" :max="endnum" @input="searchdate = $event.target.value"/>
-        <button type="button" @click="fn_showAll">전체보기</button>
         <button type="button" @click="search">검색</button>
+        
+        <div v-if="!showsearch">
+          <p class="searchC">기준일 : {{ state_Dt }}</p>
+          <p class="searchC">확진자 수 : {{ decide_Cnt }}</p>
+          <p class="searchC">사망자 수 : {{ death_Cnt }}</p>
+          <hr>
+        </div>
       </div> 
-      
-      <div v-if="searchArray.length<1">
-          <p>{{ empty }}</p>
+
+      <hr/>
+      <div v-for="item in array" :key="item.stateDt">
+        <p>기준일 : {{ item.stateDt }}</p>
+        <p>누적 확진자 수 : {{ item.decideCnt }}</p>
+        <p>누적 사망자 수 : {{ item.deathCnt }}</p>
+        <p v-show="!showEmpty">{{ empty }}</p>
+        <p>=======================================</p>
       </div>
-      <div v-for="item in searchArray" :key="item.createDt">
-          <div>
-              <p>기준일 : {{ item.stateDt }}</p>
-              <p>확진자 수 : {{ item.decideCnt }}</p>
-              <p>사망자 수 : {{ item.deathCnt }}</p>
-              <hr>
-          </div>
-      </div>        
-      
     </div>
 
     
@@ -47,24 +50,19 @@ filters:{
   }
 },
 
-data() {
-  return {
-    view: true,
-    totalCount: '',
-    array:'',
-    searchArray:'',
-    showAll:true,
-    empty:'is Empty!!',
-    isEmpty:true,
-    // 날짜검색
-    state_Dt:'',
-    decide_Cnt:'',
-    death_Cnt:'',
-    startnum:'',
-    endnum:'',
-    searchC:''
-  }
-},
+  data() {
+    return {
+      view: true,
+      startnum:'', endnum:'', //기간검색
+      totalCount: '',
+      array:'', searchArray:'', //배열
+      showAll:true,
+      showsearch:true,
+      empty:'is Empty!!',
+      showEmpty:true,
+      state_Dt:'', decide_Cnt:'', death_Cnt:'', //달력검색
+    }
+  },
 
   methods: {
     searchall() {
@@ -75,42 +73,54 @@ data() {
       let end = '&endCreateDt=' + this.endnum
 
       const lv_Vm = this
-      axios.get(url + key + param + start + end)
+
+      // HTTP GET 요청 : axios.get('url주소').then().catch()
+      axios
+      .get(url + key + param + start + end)
       .then((result) => {
         console.log(result.data)
         if(result.data.response.body.items.length < 1) {
-          lv_Vm.fn_isEmpty()
+          lv_Vm.showEmpty = false
+          console.log("nononnonono")
         }
         lv_Vm.totalCount = result.data.response.body.totalCount
-        lv_Vm.array= result.data.response.body.items.item
-        lv_Vm.searchArray = [...lv_Vm.array]
+        // lv_Vm.array= result.data.response.body.items.item
+        lv_Vm.array= result.data.response.body.items.item.reverse()
         lv_Vm.view = true
         console.log(result)
       })
-
       .catch((error) => {
         console.log(error)
       })
     },
 
     search() {
-      // 초기화
-      this.searchArray = []
-      this.isEmpty = false
+      this.searchArray = [...this.array]
 
       for(let i=0; i<this.array.length; i++){
-        if(this.searchdate.split('-').join('') === this.array[i].stateDt.toString()){
-            this.searchArray.push(this.array[i])
+        // 누적 확진/사망자 수
+        // a.decide_Cnt = a.searchArray[i].decideCnt
+        // a.death_Cnt = a.searchArray[i].deathCnt
+
+        // 당일 확진/사망자 수
+        if(this.searchArray[i].stateDt === this.searchArray[0].stateDt) {
+          this.state_Dt = "확인 불가. Start Date를 이전 날짜로 선택하세요."
+          this.decide_Cnt = "-"
+          this.death_Cnt = "-"
+        } else if(this.searchdate.split('-').join('') === this.searchArray[i].stateDt.toString()){ 
+          this.state_Dt = this.searchArray[i].stateDt
+          this.decide_Cnt = this.searchArray[i].decideCnt - this.searchArray[i-1].decideCnt
+          this.death_Cnt = this.searchArray[i].deathCnt - this.searchArray[i-1].deathCnt
         }
       }
 
-      if(this.searchArray.length < 1) {
-          this.isEmpty = true
+      // 날짜검색
+      if(this.searchArray.length < 1){ //검색결과X
+        this.showAll = false
+      } else {
+        this.showAll = true
+        this.showsearch = false
       }
-    },
-    fn_showAll() {
-      this.searchArray = this.array
-
     }
   }
 }
@@ -120,3 +130,4 @@ data() {
 .searchC { 
   color: red;
 }
+</style>

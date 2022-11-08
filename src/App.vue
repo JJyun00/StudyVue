@@ -1,37 +1,17 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <HeaderPage/>
+    <router-view/>
   </div>
 </template>
 
 <script>
-
-import HelloWorld from './components/HelloWorld.vue'
+import HeaderPage from './components/headerPage.vue';
 
 export default {
   name: 'App',
-
   components: {
-    HelloWorld
-  },
-  beforeCreate() {
-    console.log('beforeCreate')
-  },
-  created() {
-    console.log('created')
-  },
-  beforeMount() {
-    console.log('beforeMount')
-  },
-  mounted() {
-    console.log('mounted')
-  },
-  beforeDestroy() {
-    console.log('beforeDestroy')
-  },
-  destroyed() {
-    console.log('destroyed')
+    HeaderPage
   }
 }
 </script>

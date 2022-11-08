@@ -1,17 +1,20 @@
 <template>
   <div id="app">
-    <HeaderPage/>
-    <router-view/>
+    <div>
+      <img alt="Vue logo" src="./assets/logo.png">
+    </div>
+      <DashBoard/><hr/><br/>
+      <router-view></router-view>
   </div>
 </template>
 
 <script>
-import HeaderPage from './components/headerPage.vue';
+import DashBoard from './components/DashBoard.vue'
 
 export default {
   name: 'App',
   components: {
-    HeaderPage
+    DashBoard
   }
 }
 </script>

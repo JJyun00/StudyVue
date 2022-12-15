@@ -24,3 +24,8 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+
+#### 참고자료
+1. vue.js 시작하기
+https://yeonzzy.tistory.com/2
